@@ -1,11 +1,7 @@
-type ErrorObject<T = string, D = unknown> = {
+type ErrorResult<T> = {
+  status: 'error'
   code: number
   message: T
-  details?: D
-}
-
-type ErrorResult<T = string, D = unknown> = {
-  error: ErrorObject<T, D>
 }
 
 type SuccessResult<T> = {
@@ -14,9 +10,7 @@ type SuccessResult<T> = {
   data: T
 }
 
-export type Result<T, E = string, D = unknown> =
-  | SuccessResult<T>
-  | ErrorResult<E, D>
+export type Result<T> = SuccessResult<T> | ErrorResult<T>
 
 export const success = <T>({
   data,
@@ -32,20 +26,16 @@ export const success = <T>({
   } as const
 }
 
-export const error = <T = string, D = unknown>({
+export const error = <T>({
   message,
   code = 400,
-  details,
 }: {
   message: T
   code?: number
-  details?: D
-}): ErrorResult<T, D> => {
+}): ErrorResult<T> => {
   return {
-    error: {
-      code,
-      message,
-      ...(details !== undefined ? { details } : {}),
-    },
+    code,
+    message,
+    status: 'error',
   } as const
 }

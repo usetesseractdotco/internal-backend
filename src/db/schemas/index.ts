@@ -1,4 +1,5 @@
 export { members, membersRelations, rolesEnum } from './members'
 export { orgs, orgsRelations } from './orgs'
+export { otps, otpsRelations } from './otps'
 export { sessions, sessionsRelations } from './sessions'
 export { users, usersRelations } from './users'
