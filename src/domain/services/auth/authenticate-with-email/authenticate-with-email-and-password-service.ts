@@ -3,6 +3,8 @@ import bcrypt from 'bcryptjs'
 import { getUserByEmail } from '@/db/repositories/users-repository'
 import { authWithEmailErrors } from '@/shared/errors/auth/auth-with-email-errors'
 import { error, success } from '@/utils/api-response'
+import { getCachedUserByEmail } from '@/utils/cache/users/get-cached-user'
+import { setUserCache } from '@/utils/cache/users/set-user-cache'
 /**
  * Authenticates a user using their email and password
  *
@@ -24,6 +26,18 @@ export async function authenticateWithEmailAndPassword({
   email: string
   password: string
 }) {
+  const cachedUser = await getCachedUserByEmail({ email })
+
+  if (cachedUser) {
+    const isPasswordValid = await bcrypt.compare(password, cachedUser.password)
+
+    if (isPasswordValid)
+      return success({
+        data: null,
+        code: 204,
+      })
+  }
+
   const user = await getUserByEmail({ email })
 
   if (!user)
@@ -32,6 +46,8 @@ export async function authenticateWithEmailAndPassword({
       message: authWithEmailErrors.INVALID_CREDENTIALS.message,
       // details: authWithEmailErrors.INVALID_CREDENTIALS.details,
     })
+
+  await setUserCache({ user })
 
   const isPasswordValid = await bcrypt.compare(password, user.password)
 
