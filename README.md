@@ -1,79 +1,101 @@
-# Tesseract
+# Tesseract Internal Backend
 
-Tesseract is a powerful Backend-as-a-Service (BaaS) platform designed specifically for cryptocurrency and blockchain development. It empowers developers to quickly build, deploy, and scale secure crypto applications without the complexity of managing blockchain infrastructure.
+This repository contains the core backend services for Tesseract's internal organization management system. It provides the APIs and infrastructure for organization management, user authentication, and team collaboration within the Tesseract platform.
 
-## MVP Features
+## Features
 
-- **Core Blockchain Integration**
-  - Initial support for Ethereum and Bitcoin networks
-  - Basic transaction broadcasting and monitoring
-  - Address generation and management
-  - Balance checking and transaction history
-  - Gas price estimation and fee optimization
-  - Block monitoring and event tracking
-  - Basic smart contract interaction (ABI parsing, method calls)
-  - Support for ERC-20 and ERC-721 token standards
+- **Organization Management**
+  - Create and manage organizations
+  - Invite members to organizations
+  - Role-based access control within organizations
+  - Organization profile and settings management
+  - Usage tracking and billing integration
 
-- **Web3 Functionality**
-  - ENS (Ethereum Name Service) resolution and reverse lookup
-  - IPFS integration for decentralized storage
-  - Token metadata fetching and caching
-  - NFT collection data aggregation
-  - Web3 provider management and fallback mechanisms
-  - Basic DeFi protocol integration (price feeds, liquidity pools)
-
-- **Essential Wallet Services**
-  - Secure wallet creation and management
-  - Private key encryption and storage
-  - Basic key backup and recovery mechanisms
-  - Read-only wallet access options
-  - HD wallet support with custom derivation paths
-  - Transaction simulation before sending
-
-- **Authentication & Security**
-  - User authentication with email/password (Web2)
-  - Web3 authentication via wallet signature (e.g., MetaMask, WalletConnect)
+- **User Management**
+  - User registration and authentication
+  - Profile management
+  - Session handling and security
   - Two-factor authentication (2FA)
-  - API key management for developers
-  - Rate limiting and basic security measures
-  - EIP-712 typed data signing support
+  - API key generation and management
 
-- **Developer Tools**
-  - RESTful API endpoints for core functionality
+- **Team Collaboration**
+  - Team creation and management
+  - Member permissions and roles
+  - Activity logs and audit trails
+  - Resource sharing between team members
+  - Collaboration settings and preferences
+
+- **API & Developer Experience**
+  - RESTful API with comprehensive documentation
   - WebSocket support for real-time updates
-  - Comprehensive API documentation
-  - JavaScript/TypeScript SDK
-  - Web3 event webhooks
-  - Contract verification tools
-
-- **Basic Analytics**
-  - Transaction monitoring dashboard
-  - Usage statistics and API metrics
-  - Simple error tracking and logging
-  - Gas usage analytics
-  - Smart contract interaction metrics
-
-## Coming Soon
-
-- Multi-chain support expansion (Solana, BSC, etc.)
-- Advanced wallet features (multi-sig, hardware wallet integration)
-- Smart contract deployment and management tools
-- Enhanced security features
-- Automated compliance tools
-- Advanced analytics and reporting
+  - Rate limiting and security measures
+  - SDK integration helpers
+  - Webhook configuration for external systems
 
 ## Getting Started
 
-Documentation and setup guides coming soon. Stay tuned for our beta release!
+### Prerequisites
 
----
+- Bun 1.2.8 runtime
+- Docker and Docker Compose
+- PostgreSQL (included in Docker setup)
+- Redis (included in Docker setup)
 
-## Contact
+### Setup
 
-- **Website:** [usetesseract.co](https://usetesseract.co)
-- **Email:** [support@usetesseract.co](mailto:support@usetesseract.co)
-- **Twitter:** [@TesseractHQ](https://twitter.com/TesseractHQ)
-- **Discord:** [Tesseract Community](https://discord.gg/tesseract)
+1. Clone the repository
+   ```bash
+   git clone https://github.com/tesseract-ai/internal-backend.git
+   cd internal-backend
+   ```
+
+2. Install dependencies
+   ```bash
+   bun install
+   ```
+
+3. Start the development environment
+   ```bash
+   docker-compose up -d
+   ```
+
+4. Create a `.env` file based on the example and configure your environment variables
+
+5. Start the development server
+   ```bash
+   bun dev
+   ```
+
+### Database Management
+
+- Generate migrations: `bun db:generate`
+- Run migrations: `bun db:migrate`
+- Open Drizzle Studio: `bun db:studio`
+
+## Architecture
+
+The backend is built with:
+- Bun runtime
+- Fastify for API server
+- Drizzle ORM for database interactions
+- PostgreSQL for persistence
+- Redis for caching and real-time features
+
+## Development
+
+- `bun dev` - Start development server with hot reloading
+- `bun build` - Build for production
+- `bun start` - Start production server
+- `bun test` - Run tests
+- `bun lint` - Lint code
+
+## API Documentation
+
+API documentation is available at `/docs` when the server is running.
+
+## Contributing
+
+Please read our [Contributing Guide](CONTRIBUTING.md) before submitting PRs.
 
 ## License
 
