@@ -2,7 +2,7 @@ import type { FastifyInstance } from 'fastify'
 import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 
-import { authenticateWithEmailAndPassword } from '@/domain/services/auth/authenticate-with-email/authenticate-with-email-and-password-service'
+import { authenticateWithEmailAndPassword } from '@/domain/services/auth/authenticate-with-email-and-password-service'
 import { authWithEmailErrors } from '@/shared/errors/auth/auth-with-email-errors'
 
 /**
