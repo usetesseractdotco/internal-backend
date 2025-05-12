@@ -1,6 +1,6 @@
 export const createUserErrors = {
   USER_ALREADY_EXISTS: {
-    code: 400,
+    code: 409,
     message: 'USER_ALREADY_EXISTS',
     details: 'User already exists',
   },

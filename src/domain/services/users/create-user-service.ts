@@ -3,6 +3,7 @@ import { createUserErrors } from '@/shared/errors/users/create-user-errors'
 import { error, success } from '@/utils/api-response'
 import { getCachedUserByEmail } from '@/utils/cache/users/get-cached-user'
 import { setUserCache } from '@/utils/cache/users/set-user-cache'
+import { hashPassword } from '@/utils/password/hash-password'
 
 /**
  * Creates a new user if the email does not already exist (checked in cache and DB).
@@ -52,9 +53,11 @@ export async function createUserService({
       message: createUserErrors.USER_ALREADY_EXISTS.message,
     })
 
+  const hashedPassword = await hashPassword(password)
+
   const user = await createUser({
     email,
-    password,
+    password: hashedPassword,
     firstName,
     lastName,
     avatarUrl,
