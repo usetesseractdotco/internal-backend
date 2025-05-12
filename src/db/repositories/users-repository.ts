@@ -27,7 +27,7 @@ export async function updateUser(
   return user[0]
 }
 
-export async function getUserById(id: User['id']) {
+export async function getUserById({ id }: { id: User['id'] }) {
   const user = await db.select().from(users).where(eq(users.id, id))
 
   if (!user[0]) return null
@@ -43,7 +43,7 @@ export async function getUserByEmail({ email }: { email: User['email'] }) {
 
   if (!user[0]) return null
 
-  return user[0] || null
+  return user[0]
 }
 
 export async function deleteUser(id: User['id']) {

@@ -37,7 +37,7 @@ export async function createUserService({
 
   if (cachedUserAlreadyExits) {
     return error({
-      code: 400,
+      code: createUserErrors.USER_ALREADY_EXISTS.code,
       message: createUserErrors.USER_ALREADY_EXISTS.message,
     })
   }
@@ -48,7 +48,7 @@ export async function createUserService({
 
   if (userAlreadyExits)
     return error({
-      code: 400,
+      code: createUserErrors.USER_ALREADY_EXISTS.code,
       message: createUserErrors.USER_ALREADY_EXISTS.message,
     })
 
@@ -63,7 +63,7 @@ export async function createUserService({
 
   if (!user)
     return error({
-      code: 500,
+      code: createUserErrors.USER_NOT_CREATED.code,
       message: createUserErrors.USER_NOT_CREATED.message,
     })
 

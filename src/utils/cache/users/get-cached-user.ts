@@ -7,3 +7,9 @@ export async function getCachedUserByEmail({ email }: { email: string }) {
 
   return cachedUser
 }
+
+export async function getCachedUserById({ id }: { id: string }) {
+  const cachedUser = await getCache<User>(`user:${id}`)
+
+  return cachedUser
+}

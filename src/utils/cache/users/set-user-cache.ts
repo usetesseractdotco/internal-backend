@@ -3,4 +3,5 @@ import { redis } from '@/libs/redis'
 
 export async function setUserCache({ user }: { user: User }) {
   await redis.set(`user:${user.email}`, JSON.stringify(user))
+  await redis.set(`user:${user.id}`, JSON.stringify(user))
 }
