@@ -1,0 +1,48 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Project Structure Guide
+
+This is a TypeScript-based backend project using Bun as the runtime. The project follows a clean architecture pattern with clear separation of concerns.
+
+## Directory Structure
+
+### Core Business Logic
+- `src/domain/`: Contains the core business logic
+  - `entities/`: Business objects and models
+  - `services/`: Business use cases and service implementations
+    - `auth/`: Authentication related services
+    - `users/`: User management services
+
+### Infrastructure & Adapters
+- `src/adapters/`: Interface adapters and external service integrations
+- `src/db/`: Database related code
+  - `repositories/`: Data access implementations
+  - `schemas/`: Database schema definitions using Drizzle ORM
+
+### HTTP Layer
+- `src/http/`: HTTP server and API related code
+  - `routes/v1/`: API routes versioned under v1
+    - `auth/`: Authentication endpoints
+    - `users/`: User management endpoints
+  - `config/`: HTTP server configuration
+
+### Utilities & Shared Code
+- `src/shared/`: Shared code and utilities
+  - `errors/`: Custom error definitions
+- `src/utils/`: Utility functions and helpers
+  - `cache/`: Caching implementations
+  - `password/`: Password handling utilities
+  - `sessions/`: Session management utilities
+
+### Configuration & Setup
+- [drizzle.config.ts](mdc:drizzle.config.ts): Database ORM configuration
+- [docker-compose.yml](mdc:docker-compose.yml): Docker services configuration
+- [.env.example](mdc:.env.example): Environment variables template
+
+### Testing
+- `src/test/`: Test related code
+  - `factories/`: Test data factories
+- [vitest.config.ts](mdc:vitest.config.ts): Test configuration

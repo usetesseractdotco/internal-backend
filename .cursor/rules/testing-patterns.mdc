@@ -1,0 +1,68 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Testing Patterns
+
+This document outlines the testing patterns and best practices used in the project. The key principle is to avoid mocks and use real implementations whenever possible.
+
+## Test Structure
+
+### Test Location
+- Each test file should be placed next to the file it tests with a `.spec.ts` suffix
+- Test factories are in `src/test/factories/`
+
+## Testing Principles
+
+### Real Dependencies Over Mocks
+We prioritize using real implementations over mocks:
+- Use actual database with test transactions
+- Real HTTP clients with controlled test servers
+- Actual file system operations in a test directory
+- Real cache implementations with test instances
+
+### Test Database Handling
+- Use real database connections with transaction rollbacks
+- Each test should run in its own transaction
+- Clean up data after each test automatically
+- Use [vitest.config.ts](mdc:vitest.config.ts) for test database configuration
+
+### Test Data Generation
+- Use factories in `src/test/factories/` to generate test data
+- Factories should create complete, valid entities
+- Avoid hardcoding test data
+- Use meaningful data that represents real use cases
+
+## Best Practices
+
+### Integration Tests
+1. Test the full stack from HTTP to database
+2. Use real HTTP requests to test endpoints
+3. Verify actual database state after operations
+4. Test error cases with real error handling
+
+### Unit Tests
+1. Focus on business logic in domain services
+2. Use real dependencies instead of mocks
+3. Test edge cases and error conditions
+4. Keep tests focused and descriptive
+
+### Performance Tests
+1. Include response time assertions
+2. Test caching behavior with real cache implementations
+3. Verify database query performance
+4. Test concurrent operations
+
+### Test Coverage
+- Coverage reports are stored in `coverage/`
+- Aim for high coverage of business logic
+- Focus on testing behavior, not implementation
+- Include edge cases and error paths
+
+## Anti-Patterns to Avoid
+1. ❌ DO NOT use mocks unless absolutely necessary
+2. ❌ DO NOT test implementation details
+3. ❌ DO NOT use stub data when you can use factories
+4. ❌ DO NOT skip cleanup after tests
+5. ❌ DO NOT write brittle tests that depend on specific implementations

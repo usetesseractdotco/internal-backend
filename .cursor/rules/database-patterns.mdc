@@ -1,0 +1,39 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Database Patterns
+
+This document outlines the database architecture and data access patterns used in the project.
+
+## Database Architecture
+
+### ORM Configuration
+The project uses Drizzle ORM for database operations:
+- [drizzle.config.ts](mdc:drizzle.config.ts): Main ORM configuration
+- Database schemas in `src/db/schemas/`
+- Migrations stored in `priv/migrations/`
+
+## Data Access Patterns
+
+### Repository Pattern
+Data access is implemented using the repository pattern:
+- Repositories are located in `src/db/repositories/`
+- Each entity has its own repository implementation
+- Repositories abstract database operations from business logic
+
+### Caching
+User-related caching implementations are located in `src/utils/cache/users/` to improve performance for frequently accessed data.
+
+## Database Operations
+
+### Migrations
+- Migration files are stored in `priv/migrations/`
+- Migration metadata is tracked in `priv/migrations/meta/`
+
+### Best Practices
+1. Always use repositories for database access
+2. Keep database schemas in `src/db/schemas/`
+3. Implement proper error handling for database operations
+4. Use transactions for operations that modify multiple records

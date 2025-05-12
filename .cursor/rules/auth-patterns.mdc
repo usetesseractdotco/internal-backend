@@ -1,0 +1,38 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Authentication Patterns
+
+This document outlines the authentication patterns and important locations for auth-related code.
+
+## Authentication Flow
+The authentication system is implemented in the following locations:
+
+- Core Logic: `src/domain/services/auth/authenticate-with-email/`
+- HTTP Routes: `src/http/routes/v1/auth/`
+- Error Handling: `src/shared/errors/auth/`
+
+## Key Components
+
+### Authentication Service
+The authentication service handles user authentication flows including:
+- Email-based authentication
+- Session management
+- Password handling
+
+### Session Management
+Session handling utilities are located in `src/utils/sessions/` and include:
+- Session creation
+- Session validation
+- Session expiration
+
+### Password Management
+Password-related utilities in `src/utils/password/` handle:
+- Password hashing
+- Password validation
+- Security measures
+
+## Error Handling
+Authentication-specific errors are defined in `src/shared/errors/auth/` for consistent error handling across the application.
