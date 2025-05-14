@@ -8,6 +8,13 @@
       "when": 1747023815900,
       "tag": "20250512042335_add_base_db_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1747244207474,
+      "tag": "20250514173647_add_preferences",
+      "breakpoints": true
     }
   ]
 }

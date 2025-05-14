@@ -3,8 +3,10 @@ import { relations } from 'drizzle-orm'
 import { boolean, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
 
 import { members } from './members'
+import { notificationPreferences } from './notification-preferences'
 import { orgs } from './orgs'
 import { otps } from './otps'
+import { securityPreferences } from './security-preferences'
 import { sessions } from './sessions'
 
 export const users = pgTable('users', {
@@ -23,9 +25,11 @@ export const users = pgTable('users', {
     .$onUpdate(() => new Date()),
 })
 
-export const usersRelations = relations(users, ({ many }) => ({
+export const usersRelations = relations(users, ({ many, one }) => ({
   ownedOrgs: many(orgs),
   memberOf: many(members),
   sessions: many(sessions),
   otps: many(otps),
+  notificationPreferences: one(notificationPreferences),
+  securityPreferences: one(securityPreferences),
 }))

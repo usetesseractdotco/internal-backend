@@ -1,4 +1,4 @@
-import { deleteUserErrors } from '@/shared/errors/users/delete-user-errors'
+import { commonUserErrors } from '@/shared/errors/users/common-user-errors'
 import { makeUser } from '@/test/factories/make-user'
 
 import { deleteUserService } from './delete-user-service'
@@ -27,5 +27,5 @@ it('should not be able to delete a non-existing user', async () => {
 
   expect(result).toBeDefined()
   expect(result.status).toBe('error')
-  expect(result.code).toBe(deleteUserErrors.USER_NOT_FOUND.code)
+  expect(result.code).toBe(commonUserErrors.USER_NOT_FOUND.code)
 })

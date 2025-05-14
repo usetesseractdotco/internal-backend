@@ -1,6 +1,6 @@
 import { deleteUser, getUserById } from '@/db/repositories/users-repository'
 import type { User } from '@/domain/entities/users'
-import { deleteUserErrors } from '@/shared/errors/users/delete-user-errors'
+import { commonUserErrors } from '@/shared/errors/users/common-user-errors'
 import { error, success } from '@/utils/api-response'
 import { deleteUserCache } from '@/utils/cache/users/delete-user-cache'
 import { getCachedUserById } from '@/utils/cache/users/get-cached-user'
@@ -30,8 +30,8 @@ export async function deleteUserService({ id }: { id: string }) {
 
     if (!user)
       return error({
-        code: deleteUserErrors.USER_NOT_FOUND.code,
-        message: deleteUserErrors.USER_NOT_FOUND.message,
+        code: commonUserErrors.USER_NOT_FOUND.code,
+        message: commonUserErrors.USER_NOT_FOUND.message,
       })
   }
 
