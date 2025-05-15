@@ -19,10 +19,13 @@ export const users = pgTable('users', {
   avatarUrl: text('avatar_url'),
   isEmailVerified: boolean('is_email_verified').notNull().default(false),
 
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .defaultNow()
+    .notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true })
     .defaultNow()
-    .$onUpdate(() => new Date()),
+    .$onUpdate(() => new Date())
+    .notNull(),
 })
 
 export const usersRelations = relations(users, ({ many, one }) => ({

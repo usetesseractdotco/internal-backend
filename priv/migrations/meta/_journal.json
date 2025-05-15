@@ -15,6 +15,13 @@
       "when": 1747244207474,
       "tag": "20250514173647_add_preferences",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1747324428592,
+      "tag": "20250515155348_make_timestamp_fields_non_nullable",
+      "breakpoints": true
     }
   ]
 }
