@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import * as notificationPreferencesRepository from '@/db/repositories/notifications-preferences-repository'
 import { commonUserErrors } from '@/shared/errors/users/common-user-errors'
@@ -8,6 +8,10 @@ import { makeUser } from '@/test/factories/make-user'
 import { setupUserNotificationPreferencesService } from './setup-user-preferences-service'
 
 describe('Setup User Notification Preferences Service', () => {
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
   it('should successfully setup notification preferences for a user', async () => {
     const user = await makeUser()
     if (!user) throw new Error('Failed to create test user')
@@ -46,6 +50,40 @@ describe('Setup User Notification Preferences Service', () => {
     if (result.status === 'error') {
       expect(result.message).toBe(commonUserErrors.USER_NOT_FOUND.message)
       expect(result.code).toBe(commonUserErrors.USER_NOT_FOUND.code)
+    }
+  })
+
+  it('should return error when upsertNotificationPreferences returns null', async () => {
+    // Create a user
+    const user = await makeUser()
+    if (!user) throw new Error('Failed to create test user')
+
+    // Mock the repository to return null (database operation succeeded but no record created)
+    vi.spyOn(
+      notificationPreferencesRepository,
+      'upsertNotificationPreferences',
+    ).mockResolvedValueOnce(null)
+
+    const preferences = {
+      userId: user.id,
+      emailNotifications: true,
+      marketingNotifications: false,
+      securityAlerts: true,
+      accountUpdates: true,
+      newFeatures: false,
+    }
+
+    const result = await setupUserNotificationPreferencesService(preferences)
+    expect(result.status).toBe('error')
+
+    if (result.status === 'error') {
+      expect(result.message).toBe(
+        notificationPreferencesErrors.NOTIFICATION_PREFERENCES_NOT_CREATED
+          .message,
+      )
+      expect(result.code).toBe(
+        notificationPreferencesErrors.NOTIFICATION_PREFERENCES_NOT_CREATED.code,
+      )
     }
   })
 

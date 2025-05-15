@@ -27,6 +27,7 @@ export default defineConfig({
         'src/http/**/*',
         'src/factories/**/*',
         'src/**/*.tsx',
+        'src/domain/entities/**/*.ts',
       ],
     },
   },

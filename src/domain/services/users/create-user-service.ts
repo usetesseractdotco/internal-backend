@@ -43,6 +43,7 @@ export async function createUserService({
     })
   }
 
+  // Only check the database if user is not found in cache
   const userAlreadyExits = await getUserByEmail({
     email,
   })
