@@ -9,7 +9,7 @@ import { makeUser } from '@/test/factories/make-user'
 import { error } from '@/utils/api-response'
 import { setUserCache } from '@/utils/cache/users/set-user-cache'
 
-import { createOrganizationService } from './create-organization'
+import { createOrganizationService } from './create-organization-service'
 
 describe('Create Organization Service', () => {
   let user: User

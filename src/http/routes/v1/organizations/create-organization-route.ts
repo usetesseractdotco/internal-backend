@@ -2,7 +2,7 @@ import type { FastifyInstance } from 'fastify'
 import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 
-import { createOrganizationService } from '@/domain/services/organizations/create-organization'
+import { createOrganizationService } from '@/domain/services/organizations/create-organization-service'
 import { authMiddleware } from '@/http/middleware/auth-middleware'
 import { createOrganizationErrors } from '@/shared/errors/organizations/create-organization-errors'
 import { commonUserErrors } from '@/shared/errors/users/common-user-errors'
