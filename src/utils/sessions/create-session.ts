@@ -2,7 +2,7 @@ import * as jose from 'jose'
 
 import { ACCESS_TOKEN_EXPIRY, REFRESH_TOKEN_EXPIRY, secretKey } from '.'
 
-async function createAccessToken({
+export async function createAccessToken({
   userId,
   sessionId,
 }: {
@@ -21,7 +21,7 @@ async function createAccessToken({
   return { accessToken }
 }
 
-async function createRefreshToken({
+export async function createRefreshToken({
   userId,
   sessionId,
 }: {

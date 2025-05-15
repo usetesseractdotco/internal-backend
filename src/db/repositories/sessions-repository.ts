@@ -45,3 +45,38 @@ export async function deleteSessionByToken({
     .delete(sessions)
     .where(and(eq(sessions.token, token), eq(sessions.userId, userId)))
 }
+
+export async function findSessionByIdIpAndUserAgent({
+  id,
+  userId,
+  ipAddress,
+  userAgent,
+}: {
+  id: string
+  userId: string
+  ipAddress: string
+  userAgent: string
+}) {
+  const session = await db
+    .select()
+    .from(sessions)
+    .where(
+      and(
+        eq(sessions.id, id),
+        eq(sessions.userId, userId),
+        eq(sessions.ipAddress, ipAddress),
+        eq(sessions.userAgent, userAgent),
+      ),
+    )
+
+  if (!session[0]) return null
+
+  return session[0]
+}
+
+export async function updateSessionRefreshedAt(id: string, userId: string) {
+  await db
+    .update(sessions)
+    .set({ refreshedAt: new Date() })
+    .where(and(eq(sessions.id, id), eq(sessions.userId, userId)))
+}

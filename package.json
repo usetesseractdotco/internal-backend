@@ -39,6 +39,7 @@
     "@fastify/swagger-ui": "^5.2.2",
     "@paralleldrive/cuid2": "^2.2.2",
     "bcryptjs": "^3.0.2",
+    "date-fns": "^4.1.0",
     "drizzle-orm": "^0.43.1",
     "fastify": "^5.3.2",
     "fastify-type-provider-zod": "^4.0.2",
