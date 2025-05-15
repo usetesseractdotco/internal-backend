@@ -6,7 +6,11 @@ import { db } from '..'
 import { sessions } from '../schemas'
 
 export async function createSession(data: InsertSessionModel) {
-  return await db.insert(sessions).values(data).returning()
+  const session = await db.insert(sessions).values(data).returning()
+
+  if (!session[0]) return null
+
+  return session[0]
 }
 
 export async function findSessionByUserIdIpAddressAndUserAgent({

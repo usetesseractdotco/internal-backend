@@ -4,23 +4,57 @@ import { z } from 'zod'
 
 import { authenticateWithEmailAndPassword } from '@/domain/services/auth/authenticate-with-email-and-password-service'
 import { authWithEmailErrors } from '@/shared/errors/auth/auth-with-email-errors'
+import { passwordSchema } from '@/utils/password/index.'
+import {
+  ACCESS_TOKEN_EXPIRY_MS,
+  REFRESH_TOKEN_EXPIRY_MS,
+} from '@/utils/sessions'
 
 /**
- * Registers the route for authenticating a user with email and password.
+ * Authenticates a user using email and password credentials.
  *
+ * @route POST /auth/login
+ * @tags Authentication
+ *
+ * @body {object} request
+ * @body {string} request.email - User's email address (must be valid email format)
+ * @body {string} request.password - User's password
+ *
+ * @header {string} user-agent - Required. Client's user agent string
+ * @header {string} [x-forwarded-for] - Optional. Client's forwarded IP address
+ *
+ * @returns {null} 204 - Authentication successful. No content returned.
+ * @returns {object} 400 - Authentication failed
+ *   @returns {string} error - Error type:
+ *     - INVALID_CREDENTIALS: Invalid email/password combination
+ *     - USER_ALREADY_HAS_SESSION_ACTIVE: User already has an active session
+ *   @returns {string} details - Detailed error message
+ *
+ * @security
+ * - Requires valid email format
+ * - Requires user-agent header
+ * - Tracks client IP address for security
+ * - Rate limiting may apply (configured separately)
+ *
+ * @example
+ * // Request
  * POST /auth/login
+ * {
+ *   "email": "user@example.com",
+ *   "password": "userPassword123"
+ * }
  *
- * req body:
- *   - email: string (required, must be a valid email)
- *   - password: string (required)
+ * // Success Response
+ * 204 No Content
  *
- * Responses:
- *   - 204: Authentication successful (no content)
- *   - 400: Invalid credentials
- *     - error: 'INVALID_CREDENTIALS'
- *     - details: 'Invalid credentials'
+ * // Error Response
+ * 400 Bad Request
+ * {
+ *   "error": "INVALID_CREDENTIALS",
+ *   "details": "Invalid credentials"
+ * }
  *
- * @param app - The Fastify instance to register the route on.
+ * @param app - The Fastify instance to register the route on
  */
 // Registers the POST /login route for user authentication (the /auth prefix is already applied in the parent router)
 export async function authenticateWithEmailAndPasswordRoute(
@@ -34,7 +68,7 @@ export async function authenticateWithEmailAndPasswordRoute(
         summary: 'Login with email and password',
         body: z.object({
           email: z.string().email(),
-          password: z.string(),
+          password: passwordSchema,
         }),
         response: {
           204: z.null(),
@@ -83,6 +117,20 @@ export async function authenticateWithEmailAndPasswordRoute(
           details: authWithEmailErrors.INVALID_CREDENTIALS.details,
         })
       }
+
+      res.cookie('accessToken', result.data.accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: ACCESS_TOKEN_EXPIRY_MS,
+        path: '/',
+      })
+
+      res.cookie('refreshToken', result.data.refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: REFRESH_TOKEN_EXPIRY_MS,
+        path: '/',
+      })
 
       return res.status(204).send()
     },

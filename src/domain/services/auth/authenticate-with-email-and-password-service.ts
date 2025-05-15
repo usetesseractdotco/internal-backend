@@ -46,11 +46,20 @@ export async function authenticateWithEmailAndPassword({
   if (cachedUser) {
     const isPasswordValid = await bcrypt.compare(password, cachedUser.password)
 
-    if (isPasswordValid)
+    if (isPasswordValid) {
+      const { accessToken, refreshToken } = await createSessionUtil({
+        userId: cachedUser.id,
+        sessionId: createId(),
+      })
+
       return success({
-        data: null,
+        data: {
+          accessToken,
+          refreshToken,
+        },
         code: 204,
       })
+    }
   }
 
   const user = await getUserByEmail({ email })
