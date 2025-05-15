@@ -4,6 +4,7 @@ import {
   findSessionByIdIpAndUserAgent,
   updateSessionRefreshedAt,
 } from '@/db/repositories/sessions-repository'
+import { commonUserErrors } from '@/shared/errors/users/common-user-errors'
 import { error, success } from '@/utils/api-response'
 import { getCachedSessionById } from '@/utils/cache/sessions/get-cached-session'
 import { setSessionCache } from '@/utils/cache/sessions/set-session-cache'
@@ -43,24 +44,24 @@ export async function revalidateToken({
 
   if (!session)
     return error({
-      message: 'Session not found' as const,
-      code: 404,
+      message: commonUserErrors.SESSION_NOT_FOUND.message,
+      code: commonUserErrors.SESSION_NOT_FOUND.code,
     })
 
   const isSessionExpired = isAfter(new Date(), new Date(session.expiresAt))
 
   if (isSessionExpired)
     return error({
-      message: 'Session expired' as const,
-      code: 401,
+      message: commonUserErrors.SESSION_EXPIRED.message,
+      code: commonUserErrors.SESSION_EXPIRED.code,
     })
 
   const isSessionRevoked = session.status === 'revoked'
 
   if (isSessionRevoked)
     return error({
-      message: 'Session revoked' as const,
-      code: 401,
+      message: commonUserErrors.SESSION_REVOKED.message,
+      code: commonUserErrors.SESSION_REVOKED.code,
     })
 
   const { refreshToken } = await createRefreshToken({

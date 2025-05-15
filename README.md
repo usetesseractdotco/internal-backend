@@ -45,7 +45,7 @@ This repository contains the core backend services for Tesseract's internal orga
 
 1. Clone the repository
    ```bash
-   git clone https://github.com/tesseract-ai/internal-backend.git
+   git clone https://github.com/usetesseractdotco/internal-backend.git
    cd internal-backend
    ```
 

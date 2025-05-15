@@ -1,5 +1,5 @@
 {
-  "name": "@tesseract-ai/internal-backend",
+  "name": "@tesseract/internal-backend",
   "version": "0.1.0",
   "module": "src/main.ts",
   "type": "module",

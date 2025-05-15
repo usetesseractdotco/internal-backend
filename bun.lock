@@ -2,7 +2,7 @@
   "lockfileVersion": 1,
   "workspaces": {
     "": {
-      "name": "@tesseract-ai/internal-backend",
+      "name": "@tesseract/internal-backend",
       "dependencies": {
         "@fastify/cookie": "^11.0.2",
         "@fastify/cors": "^11.0.1",

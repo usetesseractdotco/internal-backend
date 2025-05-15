@@ -3,6 +3,7 @@ import fastifyPlugin from 'fastify-plugin'
 import * as jose from 'jose'
 
 import { revalidateToken } from '@/domain/services/auth/revalidate-token-service'
+import { commonUserErrors } from '@/shared/errors/users/common-user-errors'
 import {
   ACCESS_TOKEN_EXPIRY_MS,
   REFRESH_TOKEN_EXPIRY_MS,
@@ -28,15 +29,24 @@ export const authMiddleware = fastifyPlugin(async (app: FastifyInstance) => {
           : remoteAddress || ''
 
       if (!userAgent || !ipAddress)
-        return res.status(401).send({ message: 'Unauthorized' })
+        return res.status(commonUserErrors.UNAUTHORIZED.code).send({
+          message: commonUserErrors.UNAUTHORIZED.message,
+          details: commonUserErrors.UNAUTHORIZED.details,
+        })
 
       if (!req.headers.authorization)
-        return res.status(401).send({ message: 'Unauthorized' })
+        return res.status(commonUserErrors.UNAUTHORIZED.code).send({
+          message: commonUserErrors.UNAUTHORIZED.message,
+          details: commonUserErrors.UNAUTHORIZED.details,
+        })
 
       const refreshToken = req.cookies.refreshToken
 
       if (!refreshToken)
-        return res.status(401).send({ message: 'Unauthorized' })
+        return res.status(commonUserErrors.UNAUTHORIZED.code).send({
+          message: commonUserErrors.UNAUTHORIZED.message,
+          details: commonUserErrors.UNAUTHORIZED.details,
+        })
 
       const accessToken = req.headers.authorization
         .replace('Bearer ', '')
@@ -66,7 +76,10 @@ export const authMiddleware = fastifyPlugin(async (app: FastifyInstance) => {
           !accessTokenPayload.sub ||
           !accessTokenPayload.jti
         )
-          return res.status(401).send({ message: 'Unauthorized' })
+          return res.status(commonUserErrors.UNAUTHORIZED.code).send({
+            message: commonUserErrors.UNAUTHORIZED.message,
+            details: commonUserErrors.UNAUTHORIZED.details,
+          })
 
         const result = await revalidateToken({
           jti: accessTokenPayload.jti,
@@ -76,7 +89,17 @@ export const authMiddleware = fastifyPlugin(async (app: FastifyInstance) => {
         })
 
         if (result.status === 'error')
-          return res.status(result.code).send({ message: result.message })
+          return res.status(result.code).send({
+            message: result.message,
+            details:
+              result.message === commonUserErrors.SESSION_NOT_FOUND.message
+                ? commonUserErrors.SESSION_NOT_FOUND.details
+                : result.message === commonUserErrors.SESSION_EXPIRED.message
+                  ? commonUserErrors.SESSION_EXPIRED.details
+                  : result.message === commonUserErrors.SESSION_REVOKED.message
+                    ? commonUserErrors.SESSION_REVOKED.details
+                    : null,
+          })
 
         res.setCookie('refreshToken', result.data, {
           httpOnly: true,
