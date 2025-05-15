@@ -4,9 +4,9 @@ import {
   findSessionByIdIpAndUserAgent,
   updateSessionRefreshedAt,
 } from '@/db/repositories/sessions-repository'
-import type { Session } from '@/domain/entities/sessions'
 import { error, success } from '@/utils/api-response'
-import { getCache, ONE_WEEK_IN_SECONDS, setCache } from '@/utils/cache'
+import { getCachedSessionById } from '@/utils/cache/sessions/get-cached-session'
+import { setSessionCache } from '@/utils/cache/sessions/set-session-cache'
 import { createRefreshToken } from '@/utils/sessions'
 
 export async function revalidateToken({
@@ -20,9 +20,12 @@ export async function revalidateToken({
   ipAddress: string
   userAgent: string
 }) {
-  const cacheKey = `session:${jti}:${userId}:${ipAddress}:${userAgent}`
-  const cachedSession = await getCache<Session>(cacheKey)
-
+  const cachedSession = await getCachedSessionById({
+    id: jti,
+    userId,
+    ipAddress,
+    userAgent,
+  })
   let session = cachedSession
 
   if (!session) {
@@ -34,7 +37,7 @@ export async function revalidateToken({
     })
 
     if (session) {
-      await setCache(cacheKey, JSON.stringify(session), ONE_WEEK_IN_SECONDS)
+      await setSessionCache({ session })
     }
   }
 

@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs'
 import { authWithEmailErrors } from '@/shared/errors/auth/auth-with-email-errors'
 import { makeSession } from '@/test/factories/make-sessions'
 import { makeRawUser, makeUser } from '@/test/factories/make-user'
+import { getCachedUserById } from '@/utils/cache/users/get-cached-user'
 import { setUserCache } from '@/utils/cache/users/set-user-cache'
 
 import { authenticateWithEmailAndPassword } from './authenticate-with-email-and-password-service'
@@ -44,6 +45,10 @@ it('should be able to authenticate with cached user', async () => {
     password: hashedPassword,
   }
   await setUserCache({ user: userWithPassword })
+
+  const cachedUser = await getCachedUserById({ id: rawUser.id })
+  expect(cachedUser).toBeDefined()
+  expect(cachedUser?.password).toBe(hashedPassword)
 
   // Attempt authentication - this should use the cached path (lines 47-63)
   const result = await sut({
