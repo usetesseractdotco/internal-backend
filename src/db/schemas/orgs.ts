@@ -9,7 +9,6 @@ export const orgs = pgTable('orgs', {
   id: text('id').primaryKey().$defaultFn(createId),
 
   name: text('name').notNull(),
-  slug: text('slug').notNull(),
   logoUrl: text('logo_url'),
 
   ownerId: text('owner_id')

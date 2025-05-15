@@ -23,7 +23,7 @@ export function makeRawUser(user: RemoveNull<Partial<InsertUserModel>> = {}) {
     firstName: faker.person.firstName(),
     lastName: faker.person.lastName(),
     email: faker.internet.email().toLowerCase(),
-    avatarUrl: null,
+    avatarUrl: faker.image.avatar(),
     isEmailVerified: faker.datatype.boolean(),
     createdAt: new Date(),
     updatedAt: new Date(),

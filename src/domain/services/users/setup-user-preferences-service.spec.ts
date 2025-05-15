@@ -54,11 +54,10 @@ describe('Setup User Notification Preferences Service', () => {
   })
 
   it('should return error when upsertNotificationPreferences returns null', async () => {
-    // Create a user
     const user = await makeUser()
     if (!user) throw new Error('Failed to create test user')
 
-    // Mock the repository to return null (database operation succeeded but no record created)
+    // It's ok to mock the repository in this case to simulate a DB failure
     vi.spyOn(
       notificationPreferencesRepository,
       'upsertNotificationPreferences',
@@ -88,11 +87,10 @@ describe('Setup User Notification Preferences Service', () => {
   })
 
   it('should handle notification preferences creation failure', async () => {
-    // Create a user but simulate a failure in preferences creation
     const user = await makeUser()
     if (!user) throw new Error('Failed to create test user')
 
-    // Mock the repository to throw an error
+    // It's ok to mock the repository in this case to simulate a DB failure
     vi.spyOn(
       notificationPreferencesRepository,
       'upsertNotificationPreferences',

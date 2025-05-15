@@ -9,25 +9,19 @@ const sut = getProfileService
 
 describe('Get Profile Service', () => {
   it('should return user profile from cache if available', async () => {
-    // Create a test user
     const user = await makeUser()
     if (!user) throw new Error('Failed to create test user')
 
-    // Store user in cache
     await setUserCache({ user })
 
-    // Call the service
     const result = await sut({ userId: user.id })
 
-    // Verify result
     expect(result.status).toBe('ok')
     expect(result.code).toBe(200)
 
     if (result.status === 'ok') {
-      // Check that password is not included in the response
       expect(result.data).not.toHaveProperty('password')
 
-      // Check that other user properties are included
       expect(result.data).toHaveProperty('id', user.id)
       expect(result.data).toHaveProperty('email', user.email)
       expect(result.data).toHaveProperty('firstName', user.firstName)
@@ -36,35 +30,28 @@ describe('Get Profile Service', () => {
   })
 
   it('should fetch user from database if not found in cache', async () => {
-    // Create a test user but don't cache it
     const user = await makeUser()
     if (!user) throw new Error('Failed to create test user')
 
     const cahedUser = await getCachedUserById({ id: user.id })
     expect(cahedUser).toBeNull()
 
-    // Call the service
     const result = await sut({ userId: user.id })
 
-    // Verify result
     expect(result.status).toBe('ok')
     expect(result.code).toBe(200)
 
     if (result.status === 'ok') {
-      // Check that password is not included in the response
       expect(result.data).not.toHaveProperty('password')
 
-      // Check that other user properties are included
       expect(result.data).toHaveProperty('id', user.id)
       expect(result.data).toHaveProperty('email', user.email)
     }
   })
 
   it('should return error when user is not found in cache or database', async () => {
-    // Call the service with non-existent user ID
     const result = await sut({ userId: 'non-existent-id' })
 
-    // Verify error result
     expect(result.status).toBe('error')
     expect(result.code).toBe(commonUserErrors.USER_NOT_FOUND.code)
 
