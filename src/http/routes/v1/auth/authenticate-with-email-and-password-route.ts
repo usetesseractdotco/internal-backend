@@ -10,7 +10,7 @@ import { authWithEmailErrors } from '@/shared/errors/auth/auth-with-email-errors
  *
  * POST /auth/login
  *
- * Request body:
+ * req body:
  *   - email: string (required, must be a valid email)
  *   - password: string (required)
  *
@@ -39,25 +39,52 @@ export async function authenticateWithEmailAndPasswordRoute(
         response: {
           204: z.null(),
           400: z.object({
-            error: z.literal('INVALID_CREDENTIALS'),
-            details: z.literal('Invalid credentials'),
+            error: z.enum([
+              authWithEmailErrors.INVALID_CREDENTIALS.message,
+              authWithEmailErrors.USER_ALREADY_HAS_SESSION_ACTIVE.message,
+            ]),
+            details: z.enum([
+              authWithEmailErrors.INVALID_CREDENTIALS.details,
+              authWithEmailErrors.USER_ALREADY_HAS_SESSION_ACTIVE.details,
+            ]),
           }),
         },
       },
     },
-    async (request, reply) => {
-      const { email, password } = request.body
+    async (req, res) => {
+      const { email, password } = req.body
 
-      const result = await authenticateWithEmailAndPassword({ email, password })
+      const userAgent = req.headers['user-agent']
+      const forwardedFor = req.headers['x-forwarded-for']
+      const remoteAddress = req.socket?.remoteAddress
+      const forwardedForArray =
+        typeof forwardedFor === 'string' ? forwardedFor.split(',') : []
+      const ipAddress =
+        forwardedForArray.length > 0
+          ? forwardedForArray[0]?.trim()
+          : remoteAddress || ''
+
+      if (!userAgent || !ipAddress)
+        return res.status(400).send({
+          error: authWithEmailErrors.INVALID_CREDENTIALS.message,
+          details: authWithEmailErrors.INVALID_CREDENTIALS.details,
+        })
+
+      const result = await authenticateWithEmailAndPassword({
+        email,
+        password,
+        ipAddress,
+        userAgent,
+      })
 
       if (result.status === 'error') {
-        return reply.status(result.code).send({
+        return res.status(result.code).send({
           error: result.message,
           details: authWithEmailErrors.INVALID_CREDENTIALS.details,
         })
       }
 
-      return reply.status(204).send()
+      return res.status(204).send()
     },
   )
 }
