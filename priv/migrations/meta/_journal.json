@@ -29,6 +29,13 @@
       "when": 1747324815850,
       "tag": "20250515160015_remove_slug_from_org",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1747400087129,
+      "tag": "20250516125447_setup_2fa",
+      "breakpoints": true
     }
   ]
 }

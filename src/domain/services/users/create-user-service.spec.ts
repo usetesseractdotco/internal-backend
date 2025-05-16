@@ -1,5 +1,3 @@
-import { vi } from 'vitest'
-
 import * as usersRepository from '@/db/repositories/users-repository'
 import { createUserErrors } from '@/shared/errors/users/create-user-errors'
 import { makeRawUser, makeUser } from '@/test/factories/make-user'

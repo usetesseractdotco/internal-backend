@@ -1,7 +1,7 @@
 import { addDays, subDays } from 'date-fns'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
 import { findSessionByIdIpAndUserAgent } from '@/db/repositories/sessions-repository'
+import { commonUserErrors } from '@/shared/errors/users/common-user-errors'
 import { makeSession } from '@/test/factories/make-sessions'
 import { makeUser } from '@/test/factories/make-user'
 import { clearCache } from '@/utils/cache'
@@ -71,9 +71,9 @@ describe('RevalidateTokenService', () => {
       })
 
       expect(result.status).toBe('error')
-      expect(result.code).toBe(404)
+      expect(result.code).toBe(commonUserErrors.SESSION_NOT_FOUND.code)
       if (result.status === 'error') {
-        expect(result.message).toBe('Session not found')
+        expect(result.message).toBe(commonUserErrors.SESSION_NOT_FOUND.message)
       }
     })
 
@@ -98,9 +98,9 @@ describe('RevalidateTokenService', () => {
       })
 
       expect(result.status).toBe('error')
-      expect(result.code).toBe(401)
+      expect(result.code).toBe(commonUserErrors.SESSION_EXPIRED.code)
       if (result.status === 'error') {
-        expect(result.message).toBe('Session expired')
+        expect(result.message).toBe(commonUserErrors.SESSION_EXPIRED.message)
       }
     })
 
@@ -125,9 +125,9 @@ describe('RevalidateTokenService', () => {
       })
 
       expect(result.status).toBe('error')
-      expect(result.code).toBe(401)
+      expect(result.code).toBe(commonUserErrors.SESSION_REVOKED.code)
       if (result.status === 'error') {
-        expect(result.message).toBe('Session revoked')
+        expect(result.message).toBe(commonUserErrors.SESSION_REVOKED.message)
       }
     })
   })

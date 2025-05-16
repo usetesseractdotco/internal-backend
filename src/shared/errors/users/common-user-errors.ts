@@ -24,4 +24,9 @@ export const commonUserErrors = {
     message: 'SESSION_REVOKED',
     details: 'Session revoked',
   },
+  EMAIL_DOES_NOT_MATCH: {
+    code: 400,
+    message: 'EMAIL_DOES_NOT_MATCH',
+    details: 'Email does not match',
+  },
 } as const

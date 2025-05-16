@@ -1,5 +1,3 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-
 import * as organizationsRepository from '@/db/repositories/organizations-repository'
 import type { User } from '@/domain/entities/users'
 import { createOrganizationErrors } from '@/shared/errors/organizations/create-organization-errors'

@@ -1,5 +1,3 @@
-import { afterEach, describe, expect, it, vi } from 'vitest'
-
 import * as notificationPreferencesRepository from '@/db/repositories/notifications-preferences-repository'
 import { commonUserErrors } from '@/shared/errors/users/common-user-errors'
 import { notificationPreferencesErrors } from '@/shared/errors/users/notifications-preferences-errors'

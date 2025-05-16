@@ -1,0 +1,1 @@
+ALTER TABLE "security_preferences" ADD COLUMN "two_factor_secret" text DEFAULT '' NOT NULL;

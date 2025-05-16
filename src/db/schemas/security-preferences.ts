@@ -11,6 +11,7 @@ export const securityPreferences = pgTable('security_preferences', {
     .unique(),
 
   twoFactorEnabled: boolean('two_factor_enabled').notNull().default(false),
+  twoFactorSecret: text('two_factor_secret').notNull().default(''),
 
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at')
