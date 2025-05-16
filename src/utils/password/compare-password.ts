@@ -1,8 +1,8 @@
-import bcrypt from 'bcryptjs'
+import { tesseractUtils } from '../tesseract'
 
 export async function comparePassword(
   password: string,
   hashedPassword: string,
 ) {
-  return await bcrypt.compare(password, hashedPassword)
+  return await tesseractUtils.password.compare(password, hashedPassword)
 }

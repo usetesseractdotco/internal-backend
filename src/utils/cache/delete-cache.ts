@@ -1,5 +1,5 @@
-import { redis } from '@/libs/redis'
+import { tesseractUtils } from '../tesseract'
 
 export const deleteCache = async (key: string) => {
-  await redis.del(key)
+  await tesseractUtils.cache.delete(key)
 }

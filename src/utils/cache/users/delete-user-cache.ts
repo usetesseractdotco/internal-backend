@@ -1,5 +1,4 @@
 import type { User } from '@/domain/entities/users'
-import { redis } from '@/libs/redis'
 
 import { deleteCache } from '../delete-cache'
 

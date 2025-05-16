@@ -1,10 +1,9 @@
-import bcrypt from 'bcryptjs'
-
 import { authWithEmailErrors } from '@/shared/errors/auth/auth-with-email-errors'
 import { makeSession } from '@/test/factories/make-sessions'
 import { makeRawUser, makeUser } from '@/test/factories/make-user'
 import { getCachedUserById } from '@/utils/cache/users/get-cached-user'
 import { setUserCache } from '@/utils/cache/users/set-user-cache'
+import { hashPassword } from '@/utils/password/hash-password'
 
 import { authenticateWithEmailAndPassword } from './authenticate-with-email-and-password-service'
 
@@ -37,7 +36,7 @@ it('should be able to authenticate with cached user', async () => {
 
   // Generate hashed password that will match the test password
   const password = 'cached-user-test-password'
-  const hashedPassword = await bcrypt.hash(password, 10)
+  const hashedPassword = await hashPassword(password)
 
   // Set cache with our test user and the known password hash
   const userWithPassword = {

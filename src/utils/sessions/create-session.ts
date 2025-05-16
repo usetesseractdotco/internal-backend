@@ -1,44 +1,6 @@
 import * as jose from 'jose'
 
-import { ACCESS_TOKEN_EXPIRY, REFRESH_TOKEN_EXPIRY, secretKey } from '.'
-
-export async function createAccessToken({
-  userId,
-  sessionId,
-}: {
-  userId: string
-  sessionId: string
-}) {
-  const accessToken = await new jose.SignJWT({
-    sub: userId,
-    jti: sessionId,
-  })
-    .setIssuedAt()
-    .setExpirationTime(ACCESS_TOKEN_EXPIRY)
-    .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
-    .sign(secretKey)
-
-  return { accessToken }
-}
-
-export async function createRefreshToken({
-  userId,
-  sessionId,
-}: {
-  userId: string
-  sessionId: string
-}) {
-  const refreshToken = await new jose.SignJWT({
-    sub: userId,
-    jti: sessionId,
-  })
-    .setIssuedAt()
-    .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
-    .setExpirationTime(REFRESH_TOKEN_EXPIRY)
-    .sign(secretKey)
-
-  return { refreshToken }
-}
+import { tesseractUtils } from '../tesseract'
 
 export async function decodeJWT(token: string) {
   const decoded = jose.decodeJwt(token)
@@ -56,25 +18,8 @@ export async function decodeJWT(token: string) {
   }
 }
 
-export async function createSession({
-  userId,
-  sessionId,
-}: {
-  userId: string
-  sessionId: string
-}) {
-  const { accessToken } = await createAccessToken({
-    userId,
-    sessionId,
-  })
+export const createSession = tesseractUtils.sessions.create
 
-  const { refreshToken } = await createRefreshToken({
-    userId,
-    sessionId,
-  })
+export const verifySession = tesseractUtils.sessions.verify
 
-  return {
-    accessToken,
-    refreshToken,
-  }
-}
+export const createRefreshToken = tesseractUtils.sessions.refresh

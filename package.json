@@ -12,7 +12,8 @@
     "lint": "bun eslint --fix src --ext ts",
     "db:generate": "drizzle-kit generate --name",
     "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@faker-js/faker": "^9.7.0",
@@ -38,7 +39,7 @@
     "@fastify/swagger": "^9.5.1",
     "@fastify/swagger-ui": "^5.2.2",
     "@paralleldrive/cuid2": "^2.2.2",
-    "bcryptjs": "^3.0.2",
+    "@usetesseract/utils": "^0.1.6",
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.43.1",
     "fastify": "^5.3.2",

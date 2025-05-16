@@ -3,7 +3,7 @@ import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 
 import { deleteUserService } from '@/domain/services/users/delete-user-service'
-import { deleteUserErrors } from '@/shared/errors/users/delete-user-errors'
+import { commonUserErrors } from '@/shared/errors/users/common-user-errors'
 
 /**
  * Registers the route for deleting a user.
@@ -35,8 +35,8 @@ export async function deleteUserRoute(app: FastifyInstance) {
         response: {
           204: z.null(),
           400: z.object({
-            error: z.literal(deleteUserErrors.USER_NOT_FOUND.message),
-            details: z.literal(deleteUserErrors.USER_NOT_FOUND.details),
+            error: z.literal(commonUserErrors.USER_NOT_FOUND.message),
+            details: z.literal(commonUserErrors.USER_NOT_FOUND.details),
           }),
         },
       },
@@ -51,7 +51,7 @@ export async function deleteUserRoute(app: FastifyInstance) {
       if (result.status === 'error') {
         return reply.status(result.code).send({
           error: result.message,
-          details: deleteUserErrors.USER_NOT_FOUND.details,
+          details: commonUserErrors.USER_NOT_FOUND.details,
         })
       }
 

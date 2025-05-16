@@ -1,7 +1,5 @@
-import { redis } from '@/libs/redis'
+import { tesseractUtils } from '../tesseract'
 
 export const getCache = async <T>(key: string): Promise<T | null> => {
-  const cachedData = await redis.get(key)
-
-  return cachedData ? (JSON.parse(cachedData) as T) : null
+  return await tesseractUtils.cache.get<T>(key)
 }

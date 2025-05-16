@@ -1,5 +1,5 @@
-import { redis } from '@/libs/redis'
+import { tesseractUtils } from '../tesseract'
 
 export async function clearCache(): Promise<void> {
-  await redis.flushall()
+  await tesseractUtils.cache.clear()
 }

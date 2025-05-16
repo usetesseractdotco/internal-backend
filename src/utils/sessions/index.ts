@@ -8,7 +8,8 @@ export const REFRESH_TOKEN_EXPIRY_MS = 2 * 60 * 60 * 1000 // 2 hours in millisec
 export const secretKey = new TextEncoder().encode(env.app.JWT_SECRET)
 
 export {
-  createAccessToken,
   createRefreshToken,
   createSession as createSessionUtil,
+  decodeJWT,
+  verifySession,
 } from './create-session'

@@ -1,5 +1,5 @@
-import bcrypt from 'bcryptjs'
+import { tesseractUtils } from '../tesseract'
 
 export async function hashPassword(password: string) {
-  return await bcrypt.hash(password, 10)
+  return await tesseractUtils.password.hash(password)
 }
