@@ -10,7 +10,9 @@ export const otps = pgTable('otps', {
     .$defaultFn(() => createId()),
   code: text('otp').notNull(),
 
-  userId: text('user_id').references(() => users.id),
+  userId: text('user_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
 
   expiresAt: timestamp('expires_at').notNull(),
   createdAt: timestamp('created_at').defaultNow(),

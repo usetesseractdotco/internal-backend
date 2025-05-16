@@ -1,4 +1,5 @@
 import { createId } from '@paralleldrive/cuid2'
+import { relations } from 'drizzle-orm'
 import { boolean, pgEnum, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
 
 import { users } from './users'
@@ -15,7 +16,7 @@ export const notificationPreferences = pgTable('notification_preferences', {
   id: text('id').primaryKey().$defaultFn(createId).unique(),
   userId: text('user_id')
     .notNull()
-    .references(() => users.id)
+    .references(() => users.id, { onDelete: 'cascade' })
     .unique(),
 
   emailNotifications: boolean('email_notifications').notNull().default(true),
@@ -33,3 +34,13 @@ export const notificationPreferences = pgTable('notification_preferences', {
     .defaultNow()
     .$onUpdate(() => new Date()),
 })
+
+export const notificationPreferencesRelations = relations(
+  notificationPreferences,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [notificationPreferences.userId],
+      references: [users.id],
+    }),
+  }),
+)

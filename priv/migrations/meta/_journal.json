@@ -36,6 +36,13 @@
       "when": 1747400087129,
       "tag": "20250516125447_setup_2fa",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1747416055559,
+      "tag": "20250516172055_make_relations",
+      "breakpoints": true
     }
   ]
 }
