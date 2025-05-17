@@ -23,3 +23,22 @@ export async function getOrganizationsCountByUserId(userId: string) {
 
   return organizationsCount[0].count
 }
+
+export async function getOrganizationById({ id }: { id: string }) {
+  const organization = await db.select().from(orgs).where(eq(orgs.id, id))
+
+  if (!organization[0]) return null
+
+  return organization[0]
+}
+
+export async function deleteOrganization({ id }: { id: string }) {
+  const deletedOrganization = await db
+    .delete(orgs)
+    .where(eq(orgs.id, id))
+    .returning()
+
+  if (!deletedOrganization[0]) return null
+
+  return deletedOrganization[0]
+}
