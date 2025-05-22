@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "dev": "bun --env-file .env --watch src/main.ts",
-    "build": "bun build src/main.ts",
+    "build": "tsup",
     "start": "NODE_ENV=prod bun src/main.ts",
     "test": "bun --env-file .env vitest",
     "lint": "bun eslint --fix src --ext ts",
@@ -24,6 +24,7 @@
     "drizzle-kit": "^0.31.1",
     "eslint": "8.57.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
+    "tsup": "^8.5.0",
     "unplugin-swc": "^1.5.2",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.1.3"
