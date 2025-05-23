@@ -12,6 +12,8 @@ export default defineConfig({
       reporter: ['text', 'json', 'html'],
       enabled: true,
       exclude: [
+        'tsup.config.ts',
+        'dist/**',
         '**/*.d.ts',
         'src/http/error-handler.ts',
         'drizzle.config.ts',
@@ -28,6 +30,7 @@ export default defineConfig({
         'src/factories/**/*',
         'src/**/*.tsx',
         'src/domain/entities/**/*.ts',
+        'src/utils/perms/**',
       ],
     },
   },

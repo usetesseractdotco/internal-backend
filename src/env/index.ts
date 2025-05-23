@@ -4,6 +4,7 @@ export const env = {
   db: loadDbEnvs(),
   app: loadAppEnvs(),
   redis: loadRedisEnvs(),
+  services: loadServicesEnvs(),
 }
 
 function loadAppEnvs() {
@@ -31,6 +32,14 @@ function loadRedisEnvs() {
     REDIS_HOST: z.string(),
     REDIS_PORT: z.coerce.number(),
     REDIS_PASSWORD: z.string(),
+  })
+
+  return schema.parse(process.env)
+}
+
+function loadServicesEnvs() {
+  const schema = z.object({
+    RESEND_API_KEY: z.string(),
   })
 
   return schema.parse(process.env)

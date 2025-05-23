@@ -14,4 +14,9 @@ export const commonOrganizationErrors = {
     message: 'FAILED_TO_DELETE_ORGANIZATION',
     details: 'Failed to delete organization',
   },
+  ORGANIZATION_INVITE_NOT_CREATED: {
+    code: 500,
+    message: 'ORGANIZATION_INVITE_NOT_CREATED',
+    details: 'Failed to create organization invite',
+  },
 }
