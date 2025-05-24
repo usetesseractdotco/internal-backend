@@ -8,5 +8,7 @@ export async function organizationsRoutes(app: FastifyInstance) {
   app.register(createOrganizationRoute)
   app.register(deleteOrganizationRoute)
 
-  app.register(organizationsInvitesRoutes, { prefix: '/invites' })
+  app.register(organizationsInvitesRoutes, {
+    prefix: '/:organizationId/invites',
+  })
 }

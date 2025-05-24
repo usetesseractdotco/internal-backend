@@ -27,8 +27,10 @@ export async function createOrganizationInviteRoute(app: FastifyInstance) {
               code: z.number(),
             }),
           },
-          body: z.object({
+          params: z.object({
             organizationId: z.string(),
+          }),
+          body: z.object({
             role: z
               .enum(['admin', 'billing', 'developer', 'member'])
               .default('member'),
@@ -37,7 +39,8 @@ export async function createOrganizationInviteRoute(app: FastifyInstance) {
         },
       },
       async (req, res) => {
-        const { organizationId, email, role } = req.body
+        const { organizationId } = req.params
+        const { email, role } = req.body
 
         const result = await createOrganizationInviteService({
           organizationId,

@@ -22,6 +22,7 @@ export const organizationInvites = pgTable('organization_invites', {
   email: text('email').notNull(),
   role: orgInviteRolesEnum('role').default('member'),
 
+  revokedAt: timestamp('revoked_at', { mode: 'date', withTimezone: true }),
   createdAt: timestamp('created_at', { mode: 'date', withTimezone: true })
     .notNull()
     .defaultNow(),

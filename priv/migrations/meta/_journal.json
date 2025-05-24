@@ -50,6 +50,13 @@
       "when": 1748053993758,
       "tag": "20250524023313_add_org",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1748099035588,
+      "tag": "20250524150355_add_revoked_at_to_invites",
+      "breakpoints": true
     }
   ]
 }

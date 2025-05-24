@@ -56,6 +56,7 @@ describe('Create Organization Invite Service', () => {
           organizationName: organization.name,
           inviteUrl: expect.stringContaining(`/invites/${result.data.id}`),
           createdAt: expect.any(Date),
+          revokedAt: null,
           expiresAt: null,
         })
       }
@@ -82,6 +83,7 @@ describe('Create Organization Invite Service', () => {
           email: testEmail,
           organizationName: organization.name,
           inviteUrl: expect.stringContaining(`/invites/${result.data.id}`),
+          revokedAt: null,
           createdAt: expect.any(Date),
           expiresAt: null,
         })
@@ -108,6 +110,7 @@ describe('Create Organization Invite Service', () => {
           organizationName: organization.name,
           inviteUrl: expect.stringContaining(`/invites/${result.data.id}`),
           createdAt: expect.any(Date),
+          revokedAt: null,
           expiresAt: null,
         })
       }

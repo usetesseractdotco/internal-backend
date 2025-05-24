@@ -26,3 +26,17 @@ export async function getInviteById({ id }: { id: string }) {
 
   return invite[0]
 }
+
+export async function revokeInviteById({ id }: { id: string }) {
+  const revokedInvite = await db
+    .update(organizationInvites)
+    .set({
+      revokedAt: new Date(),
+    })
+    .where(eq(organizationInvites.id, id))
+    .returning()
+
+  if (!revokedInvite[0]) return null
+
+  return revokedInvite[0]
+}
