@@ -29,17 +29,19 @@ export async function createOrganizationInviteRoute(app: FastifyInstance) {
           },
           body: z.object({
             organizationId: z.string(),
-            roleId: z.string().nullable(),
+            role: z
+              .enum(['admin', 'billing', 'developer', 'member'])
+              .default('member'),
             email: z.string(),
           }),
         },
       },
       async (req, res) => {
-        const { organizationId, email, roleId } = req.body
+        const { organizationId, email, role } = req.body
 
         const result = await createOrganizationInviteService({
           organizationId,
-          roleId,
+          role,
           email,
         })
 

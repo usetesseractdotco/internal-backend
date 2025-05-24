@@ -1,3 +1,5 @@
+import { eq } from 'drizzle-orm'
+
 import type { InsertOrgInviteModel } from '@/domain/entities/org-invites'
 
 import { db } from '..'
@@ -12,4 +14,15 @@ export async function createOrganizationInvite(data: InsertOrgInviteModel) {
   if (!organization[0]) return null
 
   return organization[0]
+}
+
+export async function getInviteById({ id }: { id: string }) {
+  const invite = await db
+    .select()
+    .from(organizationInvites)
+    .where(eq(organizationInvites.id, id))
+
+  if (!invite[0]) return null
+
+  return invite[0]
 }

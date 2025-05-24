@@ -1,5 +1,5 @@
 {
-  "id": "f060ec8f-bc4d-4eeb-ae37-701022da4db2",
+  "id": "302a9ec8-4440-409c-a2d0-eeaf66c17550",
   "prevId": "d822f510-9ca3-45a3-863b-45ecafbd764a",
   "version": "7",
   "dialect": "postgresql",
@@ -201,7 +201,7 @@
           "name": "organization_id",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "email": {
           "name": "email",
@@ -209,11 +209,13 @@
           "primaryKey": false,
           "notNull": true
         },
-        "role_id": {
-          "name": "role_id",
-          "type": "text",
+        "role": {
+          "name": "role",
+          "type": "organization_invite_roles",
+          "typeSchema": "public",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "default": "'member'"
         },
         "created_at": {
           "name": "created_at",
@@ -242,19 +244,6 @@
             "id"
           ],
           "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "organization_invites_role_id_roles_id_fk": {
-          "name": "organization_invites_role_id_roles_id_fk",
-          "tableFrom": "organization_invites",
-          "tableTo": "roles",
-          "columnsFrom": [
-            "role_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "set null",
           "onUpdate": "no action"
         }
       },
@@ -391,52 +380,6 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.roles": {
-      "name": "roles",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "name": {
-          "name": "name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "description": {
-          "name": "description",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "roles_id_unique": {
-          "name": "roles_id_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "id"
-          ]
-        }
-      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -696,6 +639,16 @@
     }
   },
   "enums": {
+    "public.organization_invite_roles": {
+      "name": "organization_invite_roles",
+      "schema": "public",
+      "values": [
+        "admin",
+        "billing",
+        "developer",
+        "member"
+      ]
+    },
     "public.member_roles": {
       "name": "member_roles",
       "schema": "public",

@@ -1,6 +1,5 @@
 import { createOrganizationInvite } from '@/db/repositories/org-invites-repository'
 import { getOrganizationById } from '@/db/repositories/organizations-repository'
-import { getRoleById } from '@/db/repositories/role-repository'
 import { env } from '@/env'
 import { commonOrganizationErrors } from '@/shared/errors/organizations/common-organization-errors'
 import { error, success } from '@/utils/api-response'
@@ -15,11 +14,11 @@ import { setOrganizationCache } from '@/utils/cache/organizations/set-org-cache'
  */
 export async function createOrganizationInviteService({
   organizationId,
-  roleId,
+  role,
   email,
 }: {
   organizationId: string
-  roleId: string | null
+  role: 'admin' | 'billing' | 'developer' | 'member'
   email: string
 }) {
   let organization = await getCachedOrganization({
@@ -43,12 +42,10 @@ export async function createOrganizationInviteService({
     })
   }
 
-  const role = roleId ? await getRoleById({ id: roleId }) : null
-
   const invite = await createOrganizationInvite({
     organizationId,
-    roleId: role?.id,
     email,
+    role,
   })
 
   if (!invite)

@@ -1,20 +1,26 @@
 import { createId } from '@paralleldrive/cuid2'
 import { relations } from 'drizzle-orm'
-import { pgTable, text, timestamp } from 'drizzle-orm/pg-core'
+import { pgEnum, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
 
 import { orgs } from './orgs'
-import { roles } from './roles'
+
+export const orgInviteRolesEnum = pgEnum('organization_invite_roles', [
+  'admin',
+  'billing',
+  'developer',
+  'member',
+])
 
 export const organizationInvites = pgTable('organization_invites', {
   id: text('id').primaryKey().unique().$defaultFn(createId),
 
-  organizationId: text('organization_id').references(() => orgs.id, {
-    onDelete: 'cascade',
-  }),
+  organizationId: text('organization_id')
+    .references(() => orgs.id, {
+      onDelete: 'cascade',
+    })
+    .notNull(),
   email: text('email').notNull(),
-  roleId: text('role_id').references(() => roles.id, {
-    onDelete: 'set null',
-  }),
+  role: orgInviteRolesEnum('role').default('member'),
 
   createdAt: timestamp('created_at', { mode: 'date', withTimezone: true })
     .notNull()
@@ -28,10 +34,6 @@ export const organizationInvitesRelations = relations(
     organization: one(orgs, {
       fields: [organizationInvites.organizationId],
       references: [orgs.id],
-    }),
-    role: one(roles, {
-      fields: [organizationInvites.roleId],
-      references: [roles.id],
     }),
   }),
 )

@@ -3,21 +3,20 @@ import { vi } from 'vitest'
 
 import * as orgInvitesRepository from '@/db/repositories/org-invites-repository'
 import type { Org } from '@/domain/entities/orgs'
-import type { Role } from '@/domain/entities/roles'
 import type { User } from '@/domain/entities/users'
 import { commonOrganizationErrors } from '@/shared/errors/organizations/common-organization-errors'
 import { makeOrganization } from '@/test/factories/make-organization'
-import { makeRole } from '@/test/factories/make-role'
 import { makeUser } from '@/test/factories/make-user'
 import { error } from '@/utils/api-response'
 import { setOrganizationCache } from '@/utils/cache/organizations/set-org-cache'
 
 import { createOrganizationInviteService } from './create-organization-invite-service'
 
+type OrganizationRole = 'admin' | 'billing' | 'developer' | 'member'
+
 describe('Create Organization Invite Service', () => {
   let user: User
   let organization: Org
-  let role: Role
   let testEmail: string
 
   beforeEach(async () => {
@@ -25,7 +24,6 @@ describe('Create Organization Invite Service', () => {
     user = (await makeUser())!
     // Create test organization with the user as owner
     organization = (await makeOrganization({ ownerId: user.id }))!
-    role = (await makeRole())!
     testEmail = faker.internet.email().toLowerCase()
   })
 
@@ -37,10 +35,12 @@ describe('Create Organization Invite Service', () => {
         organization,
       })
 
+      const role: OrganizationRole = 'admin'
+
       // Act
       const result = await createOrganizationInviteService({
         organizationId: organization.id,
-        roleId: role.id,
+        role,
         email: testEmail,
       })
 
@@ -51,7 +51,7 @@ describe('Create Organization Invite Service', () => {
         expect(result.data).toEqual({
           id: expect.any(String),
           organizationId: organization.id,
-          roleId: role.id,
+          role,
           email: testEmail,
           organizationName: organization.name,
           inviteUrl: expect.stringContaining(`/invites/${result.data.id}`),
@@ -62,10 +62,12 @@ describe('Create Organization Invite Service', () => {
     })
 
     it('should create an organization invite successfully when organization is not cached', async () => {
+      const role: OrganizationRole = 'developer'
+
       // Act
       const result = await createOrganizationInviteService({
         organizationId: organization.id,
-        roleId: role.id,
+        role,
         email: testEmail,
       })
 
@@ -76,7 +78,7 @@ describe('Create Organization Invite Service', () => {
         expect(result.data).toEqual({
           id: expect.any(String),
           organizationId: organization.id,
-          roleId: role.id,
+          role,
           email: testEmail,
           organizationName: organization.name,
           inviteUrl: expect.stringContaining(`/invites/${result.data.id}`),
@@ -86,11 +88,11 @@ describe('Create Organization Invite Service', () => {
       }
     })
 
-    it('should create an organization invite successfully without role', async () => {
+    it('should create an organization invite with member role by default', async () => {
       // Act
       const result = await createOrganizationInviteService({
         organizationId: organization.id,
-        roleId: null,
+        role: 'member',
         email: testEmail,
       })
 
@@ -101,7 +103,7 @@ describe('Create Organization Invite Service', () => {
         expect(result.data).toEqual({
           id: expect.any(String),
           organizationId: organization.id,
-          roleId: null,
+          role: 'member',
           email: testEmail,
           organizationName: organization.name,
           inviteUrl: expect.stringContaining(`/invites/${result.data.id}`),
@@ -111,28 +113,28 @@ describe('Create Organization Invite Service', () => {
       }
     })
 
-    it('should create an organization invite successfully with non-existent role ID', async () => {
-      // Act
-      const result = await createOrganizationInviteService({
-        organizationId: organization.id,
-        roleId: 'non-existent-role-id',
-        email: testEmail,
-      })
+    it('should create invites with all valid role types', async () => {
+      const roles: OrganizationRole[] = [
+        'admin',
+        'billing',
+        'developer',
+        'member',
+      ]
 
-      // Assert
-      expect(result.status).toBe('ok')
-      if (result.status === 'ok') {
-        expect(result.code).toBe(204)
-        expect(result.data).toEqual({
-          id: expect.any(String),
+      for (const role of roles) {
+        const uniqueEmail = faker.internet.email().toLowerCase()
+
+        const result = await createOrganizationInviteService({
           organizationId: organization.id,
-          roleId: null, // Should be null since role doesn't exist
-          email: testEmail,
-          organizationName: organization.name,
-          inviteUrl: expect.stringContaining(`/invites/${result.data.id}`),
-          createdAt: expect.any(Date),
-          expiresAt: null,
+          role,
+          email: uniqueEmail,
         })
+
+        expect(result.status).toBe('ok')
+        if (result.status === 'ok') {
+          expect(result.data.role).toBe(role)
+          expect(result.data.email).toBe(uniqueEmail)
+        }
       }
     })
   })
@@ -142,7 +144,7 @@ describe('Create Organization Invite Service', () => {
       // Act
       const result = await createOrganizationInviteService({
         organizationId: 'non-existent-organization-id',
-        roleId: role.id,
+        role: 'member',
         email: testEmail,
       })
 
@@ -166,7 +168,7 @@ describe('Create Organization Invite Service', () => {
       // Act
       const result = await createOrganizationInviteService({
         organizationId: organization.id,
-        roleId: role.id,
+        role: 'admin',
         email: testEmail,
       })
 
@@ -186,30 +188,51 @@ describe('Create Organization Invite Service', () => {
 
   describe('Integration Tests', () => {
     it('should create the invite in the database with correct data', async () => {
+      const role: OrganizationRole = 'billing'
+
       // Act
       const result = await createOrganizationInviteService({
         organizationId: organization.id,
-        roleId: role.id,
+        role,
         email: testEmail,
       })
 
       // Verify the result is successful
       expect(result.status).toBe('ok')
+      if (result.status === 'ok') {
+        // Verify all expected fields are present
+        expect(result.data).toHaveProperty('id')
+        expect(result.data).toHaveProperty('organizationId')
+        expect(result.data).toHaveProperty('role')
+        expect(result.data).toHaveProperty('email')
+        expect(result.data).toHaveProperty('organizationName')
+        expect(result.data).toHaveProperty('inviteUrl')
+        expect(result.data).toHaveProperty('createdAt')
+        expect(result.data).toHaveProperty('expiresAt')
 
-      // Verify the invite was created by checking the spy calls
-      // Since we're following the "real dependencies" pattern, we can verify
-      // the repository was called with correct parameters
-      expect(orgInvitesRepository.createOrganizationInvite).toBeDefined()
+        // Verify data types
+        expect(typeof result.data.id).toBe('string')
+        expect(typeof result.data.organizationId).toBe('string')
+        expect(typeof result.data.role).toBe('string')
+        expect(typeof result.data.email).toBe('string')
+        expect(typeof result.data.organizationName).toBe('string')
+        expect(typeof result.data.inviteUrl).toBe('string')
+        expect(result.data.createdAt).toBeInstanceOf(Date)
+        expect(result.data.expiresAt).toBeNull()
+
+        // Verify correct values
+        expect(result.data.organizationId).toBe(organization.id)
+        expect(result.data.role).toBe(role)
+        expect(result.data.email).toBe(testEmail)
+        expect(result.data.organizationName).toBe(organization.name)
+      }
     })
 
     it('should cache the organization after fetching from database', async () => {
-      // Ensure organization is not cached initially
-      // (it shouldn't be since we created it fresh)
-
       // Act
       const result = await createOrganizationInviteService({
         organizationId: organization.id,
-        roleId: role.id,
+        role: 'member',
         email: testEmail,
       })
 
@@ -218,11 +241,11 @@ describe('Create Organization Invite Service', () => {
       expect(result.status).toBe('ok')
     })
 
-    it('should return invite data with organization name and invite URL', async () => {
+    it('should generate correct invite URL format', async () => {
       // Act
       const result = await createOrganizationInviteService({
         organizationId: organization.id,
-        roleId: role.id,
+        role: 'developer',
         email: testEmail,
       })
 
@@ -231,8 +254,28 @@ describe('Create Organization Invite Service', () => {
       if (result.status === 'ok') {
         expect(result.data.organizationName).toBe(organization.name)
         expect(result.data.inviteUrl).toMatch(
-          new RegExp(`/invites/${result.data.id}`),
+          new RegExp(`/invites/${result.data.id}$`),
         )
+        // Verify the URL starts with a protocol or environment base URL
+        expect(result.data.inviteUrl).toMatch(/^https?:\/\/.*\/invites\/.*$/)
+      }
+    })
+
+    it('should handle email normalization correctly', async () => {
+      const upperCaseEmail = 'TEST@EXAMPLE.COM'
+
+      // Act
+      const result = await createOrganizationInviteService({
+        organizationId: organization.id,
+        role: 'member',
+        email: upperCaseEmail,
+      })
+
+      // Assert
+      expect(result.status).toBe('ok')
+      if (result.status === 'ok') {
+        // Email should be stored as provided (service doesn't normalize)
+        expect(result.data.email).toBe(upperCaseEmail)
       }
     })
   })
