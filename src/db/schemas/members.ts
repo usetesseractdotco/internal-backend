@@ -23,10 +23,13 @@ export const members = pgTable('members', {
 
   role: rolesEnum('role').default('member'),
 
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .defaultNow()
+    .notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true })
     .defaultNow()
-    .$onUpdate(() => new Date()),
+    .$onUpdate(() => new Date())
+    .notNull(),
 })
 
 export const membersRelations = relations(members, ({ one }) => ({

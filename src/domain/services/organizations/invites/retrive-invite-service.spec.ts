@@ -233,6 +233,64 @@ describe('Retrieve Invite Service', () => {
         }),
       )
     })
+
+    it('should return error when invite is expired', async () => {
+      // Create an expired invite (1 day ago)
+      const expiredDate = new Date()
+      expiredDate.setDate(expiredDate.getDate() - 1)
+
+      const expiredInvite = (await makeInvite({
+        organizationId: organization.id,
+        role: 'member',
+        expiresAt: expiredDate,
+      }))!
+
+      // Act
+      const result = await retrieveInviteService({
+        inviteId: expiredInvite.id,
+        userId: user.id,
+      })
+
+      // Assert
+      expect(result).toEqual(
+        error({
+          message: commonOrgInviteErrors.INVITE_EXPIRED.message,
+          code: commonOrgInviteErrors.INVITE_EXPIRED.code,
+        }),
+      )
+    })
+
+    it('should return error when invite is expired with cached invite', async () => {
+      // Create an expired invite (1 day ago)
+      const expiredDate = new Date()
+      expiredDate.setDate(expiredDate.getDate() - 1)
+
+      const expiredInvite = (await makeInvite({
+        organizationId: organization.id,
+        role: 'member',
+        expiresAt: expiredDate,
+      }))!
+
+      // Cache the expired invite
+      await setInviteCache({
+        id: expiredInvite.id,
+        invite: expiredInvite,
+      })
+
+      // Act
+      const result = await retrieveInviteService({
+        inviteId: expiredInvite.id,
+        userId: user.id,
+      })
+
+      // Assert
+      expect(result).toEqual(
+        error({
+          message: commonOrgInviteErrors.INVITE_EXPIRED.message,
+          code: commonOrgInviteErrors.INVITE_EXPIRED.code,
+        }),
+      )
+    })
   })
 
   describe('Integration Tests', () => {

@@ -1,3 +1,5 @@
+import { isBefore } from 'date-fns'
+
 import {
   createMember,
   getMemberByUserIdAndOrganizationId,
@@ -58,11 +60,26 @@ export async function retrieveInviteService({
     })
   }
 
+  const isExpired = invite.expiresAt && isBefore(invite.expiresAt, new Date())
+
+  if (isExpired) {
+    return error({
+      message: commonOrgInviteErrors.INVITE_EXPIRED.message,
+      code: commonOrgInviteErrors.INVITE_EXPIRED.code,
+    })
+  }
+
   const newMember = await createMember({
     userId,
     organizationId: invite.organizationId,
     role: invite.role,
   })
+
+  if (!newMember)
+    return error({
+      message: commonOrgInviteErrors.MEMBER_CREATION_FAILED.message,
+      code: commonOrgInviteErrors.MEMBER_CREATION_FAILED.code,
+    })
 
   return success({
     data: newMember,
