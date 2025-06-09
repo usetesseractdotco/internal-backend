@@ -16,9 +16,7 @@ export async function joinWaitlistRoute(app: FastifyInstance) {
           email: z.string().email(),
         }),
         response: {
-          200: z.object({
-            message: z.literal('Email added to waitlist'),
-          }),
+          204: z.null(),
           409: z.object({
             message: z.literal(waitlistErrors.USER_ALREADY_IN_WAITLIST.message),
           }),

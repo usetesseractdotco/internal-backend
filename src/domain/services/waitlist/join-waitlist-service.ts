@@ -2,6 +2,7 @@ import {
   getWaitlistEntryByEmail,
   joinWaitlist,
 } from '@/db/repositories/waitlist-repository'
+import { executeTransaction } from '@/db/transactions'
 import { waitlistErrors } from '@/shared/errors/waitlist/waitlist-errors'
 import { error, success } from '@/utils/api-response'
 import { getCachedWaitlistEntryByEmail } from '@/utils/cache/waitlist/get-cached-waitlist-entry-by-email'
@@ -32,8 +33,13 @@ export async function joinWaitlistService({ email }: { email: string }) {
   }
 
   try {
-    await joinWaitlist({ email })
-    await setWaitlistEntryCache({ email })
+    await executeTransaction(async (tx) => {
+      const [waitlistEntry] = await joinWaitlist({ email }, tx)
+
+      if (!waitlistEntry) throw new Error('Waitlist entry not found')
+
+      await setWaitlistEntryCache({ email, waitlistEntry })
+    })
 
     return success({
       code: 204,

@@ -8,6 +8,8 @@ import { joinWaitlistRoute } from './join-waitlist-route'
 export async function waitlistRoutes(app: FastifyInstance) {
   await app.register(fastifyRateLimit, {
     redis,
+    max: 10,
+    timeWindow: '1 minute',
     nameSpace: 'waitlist-rate-limit',
     continueExceeding: true,
     skipOnError: false,
