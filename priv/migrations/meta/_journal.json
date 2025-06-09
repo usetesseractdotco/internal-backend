@@ -57,6 +57,13 @@
       "when": 1748099035588,
       "tag": "20250524150355_add_revoked_at_to_invites",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1749433928491,
+      "tag": "20250609015208_add_waitlist",
+      "breakpoints": true
     }
   ]
 }
