@@ -9,7 +9,6 @@ import {
 import { logger } from '@/adapters/logger'
 import { env } from '@/env'
 
-import { configureSecurity } from './config/sec'
 import { errorHandler } from './error-handler'
 import { routes } from './routes'
 import { transformSwaggerSchema } from './transform-schema'
@@ -19,12 +18,6 @@ const app: FastifyInstance = buildFastifyInstance()
 export function startServer() {
   app.setValidatorCompiler(validatorCompiler)
   app.setSerializerCompiler(serializerCompiler)
-
-  // Configure security features
-  configureSecurity(app).catch((error) => {
-    logger.error('Failed to configure security:', error)
-    process.exit(1)
-  })
 
   app.register(fastifySwagger, {
     openapi: {
