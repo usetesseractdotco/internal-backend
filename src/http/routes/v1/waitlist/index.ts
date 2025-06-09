@@ -3,13 +3,14 @@ import type { FastifyInstance } from 'fastify'
 
 import { redis } from '@/libs/redis'
 
-import { authenticateWithEmailAndPasswordRoute } from './authenticate-with-email-and-password-route'
-import { setup2FARoute } from './setup-2fa'
+import { joinWaitlistRoute } from './join-waitlist-route'
 
-export async function authRoutes(app: FastifyInstance) {
+export async function waitlistRoutes(app: FastifyInstance) {
   await app.register(fastifyRateLimit, {
     redis,
-    nameSpace: 'auth-rate-limit',
+    max: 10,
+    timeWindow: '1 minute',
+    nameSpace: 'waitlist-rate-limit',
     continueExceeding: true,
     skipOnError: false,
     enableDraftSpec: true,
@@ -26,6 +27,5 @@ export async function authRoutes(app: FastifyInstance) {
     },
   })
 
-  app.register(authenticateWithEmailAndPasswordRoute)
-  app.register(setup2FARoute)
+  app.register(joinWaitlistRoute)
 }
